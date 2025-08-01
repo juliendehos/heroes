@@ -3,26 +3,19 @@ name:               heroes
 version:            0.1.0.0
 build-type:         Simple
 
-common deps
-  ghc-options: -O2 -Wall
-  default-language: GHC2024
-
-common wasm
-  if arch(wasm32)
-    ghc-options: -no-hs-main -optl-mexec-model=reactor "-optl-Wl,--export=hs_start"
-    cpp-options: -DWASM
-
 executable app
-  import: wasm, deps
   main-is: Client.hs
   other-modules: Common
   build-depends: base, miso
   hs-source-dirs: src
+  ghc-options: -Wall -O2 -no-hs-main -optl-mexec-model=reactor "-optl-Wl,--export=hs_start"
+  default-language: GHC2024
 
 executable heroes-server
-  import: wasm, deps
   main-is: Server.hs
   other-modules: Common
   build-depends: base, miso
   hs-source-dirs: src
+  ghc-options: -Wall -O2
+  default-language: GHC2024
 
