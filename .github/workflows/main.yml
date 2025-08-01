@@ -31,6 +31,6 @@ jobs:
           github_access_token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Build using Nix
-        run: nix develop .#default --command bash -c "cabal build"
+        run: nix develop .#default --command bash -c "cabal build heroes-server"
 
 
