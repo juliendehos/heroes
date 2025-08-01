@@ -4,17 +4,17 @@ version:            0.1.0.0
 build-type:         Simple
 
 executable app
-  main-is: Client.hs
+  main-is: client.hs
   other-modules: Common
-  build-depends: base, miso
+  build-depends: aeson, base, miso, servant
   hs-source-dirs: src
   ghc-options: -Wall -O2 -no-hs-main -optl-mexec-model=reactor "-optl-Wl,--export=hs_start"
   default-language: GHC2024
 
 executable heroes-server
-  main-is: Server.hs
+  main-is: server.hs
   other-modules: Common
-  build-depends: base, miso
+  build-depends: aeson, base, lucid2, miso, network-uri, servant, servant-server, wai-extra, warp
   hs-source-dirs: src
   ghc-options: -Wall -O2
   default-language: GHC2024
