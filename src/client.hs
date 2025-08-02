@@ -1,7 +1,7 @@
 
 import Miso (miso, run)
 
-import Common (heroesComponent)
+import Heroes.Component (heroesComponent)
 
 foreign export javascript "hs_start" main :: IO ()
 

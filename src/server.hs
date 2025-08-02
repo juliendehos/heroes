@@ -7,11 +7,11 @@
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
-module Main where
-
 import Data.Aeson (ToJSON)
 import GHC.Generics (Generic)
-import Network.HTTP.Types hiding (Header)
+import Miso hiding (run)
+import Miso.String
+import Network.HTTP.Types
 import Network.Wai (responseLBS)
 import Network.Wai.Application.Static (defaultWebAppSettings)
 import Network.Wai.Handler.Warp (run)
@@ -20,27 +20,20 @@ import Network.Wai.Middleware.RequestLogger (logStdout)
 import Servant
 import qualified System.IO as IO
 
-import Miso hiding (run)
-import Miso.String
+import Heroes.Component
+import Heroes.Update
 
-import Common (
-    Page (..),
-    ServerRoutes,
-    heroesComponent,
-    uri404,
-    uriCommunity,
-    uriHome,
- )
+type ServerRoutes = Routes (Get '[HTML] Page)
 
 main :: IO ()
 main = do
     IO.hPutStrLn IO.stderr "Running on port 3002..."
-    run 3002 $ logStdout (compress app)
+    run 3002 $ logStdout (compress serverApp)
   where
     compress = gzip def{gzipFiles = GzipCompress}
 
-app :: Application
-app = serve (Proxy @API) website
+serverApp :: Application
+serverApp = serve (Proxy @API) website
   where
     website =
         serveDirectoryWith (defaultWebAppSettings "static")
@@ -48,7 +41,6 @@ app = serve (Proxy @API) website
             :<|> pure misoManifest
             :<|> Tagged handle404
 
--- | API type
 type API =
     ("static" :> Raw)
         :<|> ServerRoutes

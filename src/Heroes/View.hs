@@ -1,99 +1,16 @@
-{-# LANGUAGE DataKinds #-}
+
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
 
-module Common where
+module Heroes.View where
 
-import           Control.Monad.State
-import           Data.Bool
-import           Data.Proxy
-import           Servant.API
-import           Servant.Links
+import Data.Bool
+import Miso
+import Miso.String
+import Miso.Style qualified as CSS
 
-import           Miso
-import           Miso.String
-import qualified Miso.Style as CSS
-
--- | Model
-data Model = Model
-    { uri :: URI
-    , navMenuOpen :: Bool
-    }
-    deriving (Show, Eq)
-
--- | Event Actions
-data Action
-    = ChangeURI URI
-    | HandleURI URI
-    | ToggleNavMenu
-    deriving (Show, Eq)
-
--- | Routes (server / client agnostic)
-type Home a = a
-type The404 a = "404" :> a
-type Community a = "community" :> a
-
--- | Routes skeleton
-type Routes a
-  =    Home a
-  :<|> Community a
-  :<|> The404 a
-
--- | Client routing
-type ClientRoutes = Routes (View Action)
-
--- | Server routing
-type ServerRoutes = Routes (Get '[HTML] Page)
-
--- | Component synonym
-type HeroesComponent = Component Model Action
-
--- | Links
-uriHome, uriCommunity, uri404 :: URI
-uriHome :<|> uriCommunity :<|> uri404 = 
-  allLinks' linkURI (Proxy @ClientRoutes)
-
--- | Page for setting HTML doctype and header
-newtype Page = Page HeroesComponent
-
--- | Client Handlers
-clientHandlers
-  ::   (Model -> View Action)
-  :<|> (Model -> View Action)
-  :<|> (Model -> View Action)
-clientHandlers
-  =    home
-  :<|> community
-  :<|> the404
-
-heroesComponent :: URI -> HeroesComponent
-heroesComponent uri =
-  (app uri)
-    { subs = [ uriSub HandleURI ]
-    , logLevel = DebugAll
-    }
-
-app :: URI -> Component Model Action
-app currentUri = component emptyModel updateModel viewModel
-  where
-    emptyModel = Model currentUri False
-    viewModel m =
-        case route (Proxy :: Proxy ClientRoutes) clientHandlers uri m of
-          Left _ -> the404 m
-          Right v -> v
-
-updateModel :: Action -> Effect Model Action
-updateModel = \case
-  HandleURI u ->
-    modify $ \m -> m { uri = u }
-  ChangeURI u -> do
-    modify $ \m -> m { navMenuOpen = False }
-    io_ (pushURI u)
-  ToggleNavMenu -> do
-    m@Model{..} <- get
-    put m { navMenuOpen = not navMenuOpen }
+import Heroes.Update
+import Heroes.Model
 
 -- | Views
 community :: Model -> View Action
@@ -312,4 +229,5 @@ onPreventClick action =
         "click"
         emptyDecoder
         (\() -> const action)
+
 
