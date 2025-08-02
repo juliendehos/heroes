@@ -1,13 +1,12 @@
 
 
-module Heroes.Action where
+module App.Action where
 
 import Miso
 
--- | Event Actions
+--  Event Actions
 data Action
     = ChangeURI URI
     | HandleURI URI
-    | ToggleNavMenu
     deriving (Eq)
 

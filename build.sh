@@ -4,19 +4,27 @@ echo ""
 echo ""###############################################################################
 echo "# clean previous build"
 echo ""###############################################################################
+rm -rf output
 make clean
 
 echo ""
 echo ""###############################################################################
-echo "# build and deploy client"
+echo "# build client"
 echo ""###############################################################################
 nix develop .#wasm --command bash -c "make"
 
 echo ""
 echo ""###############################################################################
-echo "# build and deploy server"
+echo "# build server"
 echo ""###############################################################################
 nix develop .#default --command bash -c "cabal build server" 
+
+echo ""
+echo ""###############################################################################
+echo "# generate output"
+echo ""###############################################################################
 myserver=$(nix develop .#default --command bash -c "cabal list-bin server")
-cp $myserver public/
+mkdir output
+mv public output
+cp $myserver output/
 
