@@ -4,7 +4,13 @@ Build and run:
 
 ```
 nix develop .#wasm --command bash -c "make"
-nix develop .#default --command bash -c "cabal run heroes-server"
+nix develop .#default --command bash -c "cabal run server"
+```
+
+Rebuild and deploy in `public`:
+
+```
+build.sh
 ```
 
 References:

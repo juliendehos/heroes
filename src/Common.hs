@@ -1,125 +1,315 @@
-
-{-# LANGUAGE DataKinds                  #-}
-{-# LANGUAGE DeriveGeneric              #-}
-{-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE TypeApplications           #-}
-{-# LANGUAGE TypeOperators              #-}
+{-# LANGUAGE DataKinds #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeOperators #-}
 
 module Common where
 
-import Data.Aeson (FromJSON, ToJSON)
-import Data.Proxy (Proxy(..))
-import GHC.Generics (Generic)
-import Miso hiding (Capture)
-import Miso.String (concat, MisoString, ms)
-import Prelude hiding (concat)
--- import Network.URI (URI)
-import Servant.API
-import Servant.Links
+import           Control.Monad.State
+import           Data.Bool
+import           Data.Proxy
+import           Servant.API
+import           Servant.Links
 
+import           Miso
+import           Miso.String
+import qualified Miso.Style as CSS
 
--- model
+-- | Model
+data Model = Model
+    { uri :: URI
+    , navMenuOpen :: Bool
+    }
+    deriving (Show, Eq)
 
-data Hero = Hero
-    { heroName :: MisoString
-    , heroImage :: MisoString
-    } deriving (Eq, Generic)
-
-instance FromJSON Hero
-instance ToJSON Hero
-
-data Model = Model 
-    { heroes_ :: [Hero]
-    , uri_ :: URI
-    } deriving (Eq)
-
-initModel :: URI -> Model
-initModel = Model []
-
-
--- actions
-
+-- | Event Actions
 data Action
-    = NoOp
-    | PopHeroes
-    | SetHeroes [Hero]
-    | FetchHeroes
-    | SetUri URI
-    | ChangeUri URI
-    deriving (Eq)
+    = ChangeURI URI
+    | HandleURI URI
+    | ToggleNavMenu
+    deriving (Show, Eq)
 
+-- | Routes (server / client agnostic)
+type Home a = a
+type The404 a = "404" :> a
+type Community a = "community" :> a
 
--- client routes
+-- | Routes skeleton
+type Routes a
+  =    Home a
+  :<|> Community a
+  :<|> The404 a
 
-type HomeRoute = View Action
-type AboutRoute = "about" :> View Action
-type ClientRoutes = HomeRoute :<|> AboutRoute
+-- | Client routing
+type ClientRoutes = Routes (View Action)
 
-homeRoute :: URI
-homeRoute = linkURI $ safeLink (Proxy @ClientRoutes) (Proxy @HomeRoute)
+-- | Server routing
+type ServerRoutes = Routes (Get '[HTML] Page)
 
-aboutRoute :: URI
-aboutRoute = linkURI $ safeLink (Proxy @ClientRoutes) (Proxy @AboutRoute)
+-- | Component synonym
+type HeroesComponent = Component Model Action
 
+-- | Links
+uriHome, uriCommunity, uri404 :: URI
+uriHome :<|> uriCommunity :<|> uri404 = 
+  allLinks' linkURI (Proxy @ClientRoutes)
 
--- common client/server routes 
+-- | Page for setting HTML doctype and header
+newtype Page = Page HeroesComponent
 
-type HeroesApi = "heroes" :>  Get '[JSON] [Hero] 
-type AddApi = "add" :> Capture "x" Int :> Capture "y" Int :> Get '[JSON] Int
-type StaticApi = "static" :> Raw 
+-- | Client Handlers
+clientHandlers
+  ::   (Model -> View Action)
+  :<|> (Model -> View Action)
+  :<|> (Model -> View Action)
+clientHandlers
+  =    home
+  :<|> community
+  :<|> the404
 
-type PublicApi = HeroesApi :<|> AddApi :<|> StaticApi 
+heroesComponent :: URI -> HeroesComponent
+heroesComponent uri =
+  (app uri)
+    { subs = [ uriSub HandleURI ]
+    , logLevel = DebugAll
+    }
 
-linkHeroes :: URI
-linkHeroes = linkURI $ safeLink (Proxy @PublicApi) (Proxy @HeroesApi)
+app :: URI -> Component Model Action
+app currentUri = component emptyModel updateModel viewModel
+  where
+    emptyModel = Model currentUri False
+    viewModel m =
+        case route (Proxy :: Proxy ClientRoutes) clientHandlers uri m of
+          Left _ -> the404 m
+          Right v -> v
 
-linkAdd :: Int -> Int -> URI
-linkAdd x y = linkURI (safeLink (Proxy @PublicApi) (Proxy @AddApi) x y)
+updateModel :: Action -> Effect Model Action
+updateModel = \case
+  HandleURI u ->
+    modify $ \m -> m { uri = u }
+  ChangeURI u -> do
+    modify $ \m -> m { navMenuOpen = False }
+    io_ (pushURI u)
+  ToggleNavMenu -> do
+    m@Model{..} <- get
+    put m { navMenuOpen = not navMenuOpen }
 
-linkStatic :: URI
-linkStatic = linkURI $ safeLink (Proxy @PublicApi) (Proxy @StaticApi)
-
-mkStatic :: MisoString -> MisoString
-mkStatic filename = concat [ms $ show linkStatic, "/", filename]
-
-
--- views
-
-clientViews :: (Model -> View Action) :<|> (Model -> View Action)
-clientViews = homeView :<|> aboutView
-
-{-
-viewModel :: Model -> View Action
-viewModel m = 
-    case runRoute (Proxy @ClientRoutes) clientViews uri_ m of
-        Left _ -> text "not found"
-        Right v -> v
--}
-
-homeView :: Model -> View Action
-homeView m = div_ 
-    []
-    [ h1_ [] [ text "Heroes - Home" ]
-    , button_ [ onClick $ ChangeUri aboutRoute ] [ text "About" ]
-    , button_ [ onClick FetchHeroes ] [ text "FetchHeroes" ]
-    , button_ [ onClick PopHeroes ] [ text "PopHeroes" ]
-    , ul_ [] (map fmtHero $ heroes_ m)
-    , p_ [] [ a_ [href_ $ ms $ show linkHeroes] [ text "GET: heroes" ] ] 
-    , p_ [] [ a_ [href_ $ ms $ show $ linkAdd 20 22 ] [ text "GET: add 20 22" ] ] 
-    ]
-    where fmtHero h = li_ [] 
-            [ text $ heroName h
-            , br_ []
-            , img_ [ src_ $ mkStatic (heroImage h) ]
+-- | Views
+community :: Model -> View Action
+community = template v
+  where
+    v =
+        div_
+            [class_ "animated fadeIn"]
+            [ a_
+                [href_ "https://github.com/dmjio/miso"]
+                [ img_
+                    [ width_ "100"
+                    , class_ "animated bounceInDown"
+                    , src_ misoSrc
+                    , alt_ "miso logo"
+                    ]
+                ]
+            , h1_
+                [ class_ "title animated pulse"
+                , CSS.style_
+                    [ CSS.fontSize "82px"
+                    , CSS.fontWeight "100"
+                    ]
+                ]
+                [text "community"]
+            , h2_
+                [class_ "subtitle animated pulse"]
+                [ a_
+                    [ href_ "https://github.com/haskell-miso"
+                    , target_ "_blank"
+                    ]
+                    [ text "GitHub"
+                    ]
+                , text " / "
+                , a_
+                    [ href_ "https://matrix.to/#/#haskell-miso:matrix.org"
+                    , target_ "_blank"
+                    ]
+                    [ text "Matrix.org"
+                    ]
+                , text " / "
+                , a_
+                    [ href_ "https://www.irccloud.com/invite?channel=%23haskell-miso&hostname=irc.libera.chat&port=6697&ssl=1"
+                    , target_ "_blank"
+                    ]
+                    [ text "#haskell-miso"
+                    ]
+                , text " / "
+                , a_
+                    [ href_ "https://discord.gg/QVDtfYNSxq"
+                    , target_ "_blank"
+                    ]
+                    [ text "Discord"
+                    ]
+                ]
             ]
 
-aboutView :: Model -> View Action
-aboutView _ = div_ 
-    []
-    [ h1_ [] [ text "Heroes - About" ]
-    , button_ [ onClick $ ChangeUri homeRoute ] [ text "Home" ]
-    , p_ [] [ text "This is an isomorphic web app implemented in Haskell !" ]
-    ]
+misoSrc :: MisoString
+misoSrc = "static/miso.png"
 
+home :: Model -> View Action
+home = template v
+  where
+    v =
+        div_
+            [class_ "animated fadeIn"]
+            [ a_
+                [href_ "https://github.com/dmjio/miso"]
+                [ img_
+                    [ width_ "100"
+                    , class_ "animated bounceInDown"
+                    , src_ misoSrc
+                    , alt_ "miso logo"
+                    ]
+                ]
+            , h1_
+                [ class_ "title animated pulse"
+                , CSS.style_
+                    [ CSS.fontSize "82px"
+                    , CSS.fontWeight "100"
+                    ]
+                ]
+                [text "miso"]
+            , h2_
+                [class_ "subtitle animated pulse"]
+                [ text "A tasty "
+                , a_
+                    [ href_ "https://www.haskell.org/"
+                    , rel_ "noopener"
+                    , target_ "_blank"
+                    ]
+                    [ strong_ [] [text "Haskell"]
+                    ]
+                , text " web and mobile framework"
+                ]
+            ]
 
+template :: View Action -> Model -> View Action
+template content Model{..} =
+    div_
+        []
+        [ a_
+            [ class_ "github-fork-ribbon left-top fixed"
+            , href_ "http://github.com/dmjio/miso"
+            , prop "data-ribbon" ("Fork me on GitHub" :: MisoString)
+            , target_ "blank"
+            , rel_ "noopener"
+            , title_ "Fork me on GitHub"
+            ]
+            [text "Fork me on GitHub"]
+        , hero content uri navMenuOpen
+        ]
+
+the404 :: Model -> View Action
+the404 = template v
+  where
+    v =
+        div_
+            []
+            [ a_
+                [href_ "https://github.com/dmjio/miso"]
+                [ img_
+                    [ width_ "100"
+                    , class_ "animated bounceOutUp"
+                    , src_ misoSrc
+                    , alt_ "miso logo"
+                    ]
+                ]
+            , h1_
+                [ class_ "title"
+                , CSS.style_
+                    [ CSS.fontSize "82px"
+                    , CSS.fontWeight "100"
+                    ]
+                ]
+                [text "404"]
+            , h2_
+                [class_ "subtitle animated pulse"]
+                [ text "No soup for you! "
+                , a_ [href_ "/", onPreventClick (ChangeURI uriHome)] [text " - Go Home"]
+                ]
+            ]
+
+-- | Hero
+hero :: View Action -> URI -> Bool -> View Action
+hero content uri' navMenuOpen' =
+    section_
+        [class_ "hero is-medium is-primary is-bold has-text-centered"]
+        [ div_
+            [class_ "hero-head"]
+            [ header_
+                [class_ "nav"]
+                [ div_
+                    [class_ "container"]
+                    [ div_
+                        [class_ "nav-left"]
+                        [ a_ [class_ "nav-item"] []
+                        ]
+                    , span_
+                        [ class_ $ "nav-toggle " <> bool mempty "is-active" navMenuOpen'
+                        , onClick ToggleNavMenu
+                        ]
+                        [ span_ [] []
+                        , span_ [] []
+                        , span_ [] []
+                        ]
+                    , div_
+                        [class_ $ "nav-right nav-menu " <> bool mempty "is-active" navMenuOpen']
+                        [ div_
+                            [ classList_
+                                [ ("nav-item", True)
+                                ]
+                            ]
+                            [ a_
+                                [ href_ $ ms (uriPath uriHome)
+                                , onPreventClick (ChangeURI uriHome)
+                                , classList_
+                                    [ ("is-active", uriPath uri' == "")
+                                    ]
+                                ]
+                                [ text "Home"
+                                ]
+                            ]
+
+                        , div_
+                            [ classList_
+                                [ ("nav-item", True)
+                                ]
+                            ]
+                            [ a_
+                                [ href_ $ ms (uriPath uriCommunity)
+                                , onPreventClick (ChangeURI uriCommunity)
+                                , classList_
+                                    [ ("is-active", uriPath uri' == uriPath uriCommunity)
+                                    ]
+                                ]
+                                [text "Community"]
+                            ]
+                        ]
+                    ]
+                ]
+            ]
+        , div_
+            [class_ "hero-body"]
+            [ div_
+                [class_ "container"]
+                [ content
+                ]
+            ]
+        ]
+
+onPreventClick :: Action -> Attribute Action
+onPreventClick action =
+    onWithOptions
+        defaultOptions{preventDefault = True}
+        "click"
+        emptyDecoder
+        (\() -> const action)
 
