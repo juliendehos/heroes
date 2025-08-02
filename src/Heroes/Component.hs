@@ -1,10 +1,4 @@
 
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE RecordWildCards #-}
-{-# LANGUAGE TypeFamilies #-}
-{-# LANGUAGE TypeOperators #-}
-
 module Heroes.Component where
 
 import Data.Proxy
@@ -12,6 +6,7 @@ import Servant.API
 import Miso
 
 import Heroes.Model
+import Heroes.Routes
 import Heroes.Update
 import Heroes.View
 

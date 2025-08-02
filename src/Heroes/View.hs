@@ -9,6 +9,7 @@ import Miso
 import Miso.String
 import Miso.Style qualified as CSS
 
+import Heroes.Routes
 import Heroes.Update
 import Heroes.Model
 

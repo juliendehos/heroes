@@ -1,9 +1,5 @@
-{-# LANGUAGE DataKinds #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE FlexibleInstances #-}
+
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE PolyKinds #-}
-{-# LANGUAGE TypeOperators #-}
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
@@ -21,7 +17,7 @@ import Servant
 import qualified System.IO as IO
 
 import Heroes.Component
-import Heroes.Update
+import Heroes.Routes
 
 type ServerRoutes = Routes (Get '[HTML] Page)
 
