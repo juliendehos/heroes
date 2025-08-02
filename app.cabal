@@ -18,7 +18,7 @@ executable app
   ghc-options: 
     -Wall -O2 -no-hs-main -optl-mexec-model=reactor "-optl-Wl,--export=hs_start"
 
-executable heroes-server
+executable server
   default-language:
     GHC2024
   hs-source-dirs:
