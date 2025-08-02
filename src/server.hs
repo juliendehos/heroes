@@ -63,9 +63,9 @@ instance ToHtml Page where
       [ doctype_
       , html_
         [ lang_ "en" ]
-        [ head_ []
-          [ -- title_  [] [ text "Heroes" ]
-           meta_ [ charset_ "utf-8" ]
+        [ head_ 
+          [ title_ "Heroes" ]
+          [ meta_ [ charset_ "utf-8" ]
           , meta_ [ name_ "viewport" , content_ "width=device-width, initial-scale=1" ]
           , link_
             [ rel_ "icon"

@@ -19,5 +19,5 @@ optim:
 	wasm-tools strip -o public/app.wasm public/app.wasm
 
 clean:
-	rm -rf dist-newstyle public
+	rm -rf dist-newstyle public output
 
