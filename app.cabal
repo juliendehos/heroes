@@ -9,7 +9,7 @@ executable app
   main-is:
     client.hs
   other-modules:
-    Heroes.Component Heroes.Model Heroes.Routes Heroes.Update Heroes.View
+    Heroes.Action Heroes.Component Heroes.Model Heroes.Routes Heroes.Update Heroes.View
   build-depends: 
     aeson, base, miso, network-uri, servant
   ghc-options:
@@ -23,7 +23,7 @@ executable server
   main-is:
     server.hs
   other-modules:
-    Heroes.Component Heroes.Model Heroes.Routes Heroes.Update Heroes.View
+    Heroes.Action Heroes.Component Heroes.Model Heroes.Routes Heroes.Update Heroes.View
   build-depends: 
     aeson, base, miso, network-uri, servant, servant-server, wai-extra, warp, wai, wai-app-static, http-types
   ghc-options:

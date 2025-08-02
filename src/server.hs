@@ -19,6 +19,8 @@ import qualified System.IO as IO
 import Heroes.Component
 import Heroes.Routes
 
+newtype Page = Page HeroesComponent
+
 type ServerRoutes = Routes (Get '[HTML] Page)
 
 main :: IO ()

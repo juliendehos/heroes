@@ -5,14 +5,8 @@ module Heroes.Update where
 
 import Miso
 
+import Heroes.Action
 import Heroes.Model
-
--- | Event Actions
-data Action
-    = ChangeURI URI
-    | HandleURI URI
-    | ToggleNavMenu
-    deriving (Show, Eq)
 
 updateModel :: Action -> Effect Model Action
 updateModel = \case

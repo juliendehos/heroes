@@ -6,7 +6,7 @@ import Miso
 import Servant.API
 import Servant.Links
 
-import Heroes.Update
+import Heroes.Action
 
 -- | Routes (server / client agnostic)
 type Home a = a
