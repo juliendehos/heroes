@@ -1,4 +1,3 @@
-
 {-# LANGUAGE OverloadedStrings #-}
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
@@ -16,36 +15,29 @@ import System.Environment (lookupEnv)
 
 import App.Component
 import App.Routes
+import Domain.Hero
 import Server.Api
 
-main :: IO ()
-main = do
-  port <- read . fromMaybe "3000" <$> lookupEnv "PORT"
-  putStrLn $ "Running on port " <> show port <> "..."
-  run port $ logStdout $ compress serverApp
+-------------------------------------------------------------------------------
+-- server routing
+-------------------------------------------------------------------------------
 
-  where
-    compress = gzip def{gzipFiles = GzipCompress}
+handlePublicApi :: Server PublicApi
+handlePublicApi 
+  =    serveDirectoryWith (defaultWebAppSettings "public")
+  :<|> pure heroes
 
-serverApp :: Application
-serverApp = serve (Proxy @ServerApi) serverHandlers
+type ClientRoutesServer = Routes (Get '[HTML] Page)
+
+type ServerApi
+  =    PublicApi
+  :<|> ClientRoutesServer
+  :<|> Raw
 
 newtype Page = Page HeroesComponent
 
-type RoutesServer = Routes (Get '[HTML] Page)
-
-type ServerApi
-  =    StaticApi
-  :<|> RoutesServer
-  :<|> Raw
-
-serverHandlers 
-  =    serveDirectoryWith (defaultWebAppSettings "public")
-  :<|> routesHandlersServer
-  :<|> Tagged handle404
-
-routesHandlersServer :: Server RoutesServer
-routesHandlersServer 
+handleClientRoutes :: Server ClientRoutesServer
+handleClientRoutes 
   =    pure (Page $ heroesComponent uriHome)
   :<|> pure (Page $ heroesComponent uriAbout)
   :<|> pure (Page $ heroesComponent uri404)
@@ -56,6 +48,10 @@ handle404 _ respond' =
     responseLBS status404 [("Content-Type", "text/html")] $
       toHtml $
         Page (heroesComponent uri404)
+
+-------------------------------------------------------------------------------
+-- server rendering
+-------------------------------------------------------------------------------
 
 instance ToHtml Page where
   toHtml (Page x) =
@@ -77,4 +73,30 @@ instance ToHtml Page where
           ]
         ]
       ]
+
+-------------------------------------------------------------------------------
+-- run server app
+-------------------------------------------------------------------------------
+
+heroes :: [Hero]
+heroes = 
+    [ Hero "Scooby Doo" "scoobydoo.png"
+    , Hero "Sponge Bob" "spongebob.png"
+    ]
+
+main :: IO ()
+main = do
+  port <- read . fromMaybe "3000" <$> lookupEnv "PORT"
+  putStrLn $ "Running on port " <> show port <> "..."
+  run port $ logStdout $ compress serverApp
+  where
+    compress = gzip def{gzipFiles = GzipCompress}
+
+serverApp :: Application
+serverApp = serve (Proxy @ServerApi) serverHandlers
+  where
+    serverHandlers 
+      =    handlePublicApi
+      :<|> handleClientRoutes
+      :<|> Tagged handle404
 

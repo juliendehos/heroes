@@ -1,12 +1,11 @@
 
-
 module App.Action where
 
 import Miso
 
---  Event Actions
 data Action
-    = ChangeURI URI
-    | HandleURI URI
+    = ActionChangeUri URI
+    | ActionHandleUri URI
+    | ActionPopHero
     deriving (Eq)
 

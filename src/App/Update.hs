@@ -8,9 +8,15 @@ import App.Action
 import App.Model
 
 updateModel :: Action -> Effect Model Action
-updateModel = \case
-  HandleURI u -> 
-    modelUri .= u
-  ChangeURI u -> 
-    io_ (pushURI u)
+
+updateModel (ActionChangeUri u) =
+  modelUri .= u
+
+updateModel (ActionHandleUri u) =
+  io_ (pushURI u)
+
+updateModel ActionPopHero =
+  modelHeroes %= \case
+    [] -> []
+    (_:xs) -> xs
 

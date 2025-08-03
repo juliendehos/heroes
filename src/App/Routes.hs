@@ -20,10 +20,10 @@ type Routes a
   :<|> Route404 a
 
 -- define routes for client app
-type RoutesClient = Routes (View Action)
+type ClientRoutes = Routes (View Action)
 
 -- links to the routes
 uriHome, uriAbout, uri404 :: URI
 uriHome :<|> uriAbout :<|> uri404 = 
-  allLinks' linkURI (Proxy @RoutesClient)
+  allLinks' linkURI (Proxy @ClientRoutes)
 
