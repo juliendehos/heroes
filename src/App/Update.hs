@@ -15,8 +15,11 @@ updateModel (ActionChangeUri u) =
 updateModel (ActionHandleUri u) =
   io_ (pushURI u)
 
-updateModel ActionPop =
+updateModel ActionPopHeroes =
   modelHeroes %= \case
     [] -> []
     (_:xs) -> xs
+
+-- updateModel (ActionError str) =
+--   modelError ?= str
 

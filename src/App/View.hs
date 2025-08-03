@@ -12,8 +12,8 @@ import Domain.Hero
 import Server.Api
 
 -- build a view, using a common template
-mkView :: View Action -> View Action
-mkView content =
+mkView :: Model -> View Action -> View Action
+mkView Model{..} content =
   div_
     []
     [ p_ []
@@ -22,11 +22,12 @@ mkView content =
         ]
     , h1_ [] [ "Heroes" ]
     , content
+    , p_ [] [ text (maybe "" ("error: " <>) _modelError) ]
     ]
 
 viewAbout :: Model -> View Action
-viewAbout _ = 
-  mkView  $
+viewAbout m = 
+  mkView  m $
     div_ 
       []
       [ h2_ [] [ "About" ]
@@ -43,14 +44,14 @@ viewAbout _ =
       ]
 
 viewHome :: Model -> View Action
-viewHome Model{..} =
-  mkView $
+viewHome m@Model{..} =
+  mkView m $
     div_ 
       []
       [ h2_ [] [ "Home" ]
       , p_ []
-          [ button_ [ onClick (ActionChangeUri uriHome) ] [ "fetch" ]
-          , button_ [ onClick ActionPop ] [ "pop" ]
+          -- [ button_ [ onClick (ActionChangeUri uriHome) ] [ "fetch heroes" ]
+          [ button_ [ onClick ActionPopHeroes ] [ "pop heroes" ]
           ]
       , ul_ [] (map fmtHero _modelHeroes)
       ]
@@ -64,8 +65,8 @@ viewHome Model{..} =
         ]
 
 view404 :: Model -> View Action
-view404 _ =
-  mkView  $
+view404 m =
+  mkView m $
     div_
       []
       [ "page not found" ]

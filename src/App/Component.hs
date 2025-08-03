@@ -29,7 +29,7 @@ componentApp :: URI -> Component Model Action
 componentApp currentUri = component initialModel updateModel viewModel
   where
     -- TODO initialModel = mkModel currentUri
-    initialModel = Model heroes currentUri
+    initialModel = Model heroes (Just "TODO") currentUri
 
     viewModel m =
         case route (Proxy @ClientRoutes) clientHandlers _modelUri m of
