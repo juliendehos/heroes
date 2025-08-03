@@ -13,10 +13,20 @@ import Network.Wai.Middleware.RequestLogger (logStdout)
 import Servant
 import System.Environment (lookupEnv)
 
-import App.Component
-import App.Routes
-import Domain.Hero
-import Server.Api
+import App.Component (HeroesComponent, heroesComponent)
+import App.Routes (Routes, uriHome, uriAbout, uri404)
+import Domain.Hero (Hero(..))
+import Server.Api (PublicApi, mkStaticUri)
+
+-------------------------------------------------------------------------------
+-- server data
+-------------------------------------------------------------------------------
+
+heroes :: [Hero]
+heroes = 
+    [ Hero "Scooby Doo" "scoobydoo.png"
+    , Hero "Sponge Bob" "spongebob.png"
+    ]
 
 -------------------------------------------------------------------------------
 -- server routing
@@ -77,12 +87,6 @@ instance ToHtml Page where
 -------------------------------------------------------------------------------
 -- run server app
 -------------------------------------------------------------------------------
-
-heroes :: [Hero]
-heroes = 
-    [ Hero "Scooby Doo" "scoobydoo.png"
-    , Hero "Sponge Bob" "spongebob.png"
-    ]
 
 main :: IO ()
 main = do

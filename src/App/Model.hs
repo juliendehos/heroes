@@ -1,3 +1,4 @@
+{-# LANGUAGE OverloadedStrings #-}
 
 module App.Model where
 
@@ -6,16 +7,16 @@ import Miso.Lens
 import Miso.Lens.TH
 import Miso.String
 
-import Domain.Hero
+import Domain.Hero (Hero)
 
 data Model = Model
   { _modelHeroes :: [Hero]
-  , _modelError :: Maybe MisoString
+  , _modelError :: MisoString
   , _modelUri :: URI
   } deriving (Eq)
 
 makeLenses ''Model
 
 mkModel :: URI -> Model
-mkModel = Model [] Nothing
+mkModel = Model [] "loading..."   -- TODO this breaks hydration: Model [] ""
 

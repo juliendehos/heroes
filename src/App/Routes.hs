@@ -3,10 +3,11 @@ module App.Routes where
 
 import Data.Proxy
 import Miso
+import Miso.String (ms, MisoString)
 import Servant.API
 import Servant.Links
 
-import App.Action
+import App.Action (Action)
 
 -- client/server routes
 type RouteHome a = a
@@ -26,4 +27,7 @@ type ClientRoutes = Routes (View Action)
 uriHome, uriAbout, uri404 :: URI
 uriHome :<|> uriAbout :<|> uri404 = 
   allLinks' linkURI (Proxy @ClientRoutes)
+
+uri2ms :: URI -> MisoString
+uri2ms = ms . show
 

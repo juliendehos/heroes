@@ -7,7 +7,7 @@ import Miso.String
 import Servant.API
 import Servant.Links
 
-import Domain.Hero
+import Domain.Hero (Hero)
 
 type StaticApi = "pub" :> Raw
 type HeroesApi = "heroes" :> Get '[JSON] [Hero]

@@ -5,11 +5,11 @@ module App.View where
 
 import Miso
 
-import App.Action
-import App.Model
-import App.Routes
-import Domain.Hero
-import Server.Api
+import App.Action (Action(..))
+import App.Model (Model(..))
+import App.Routes (uriHome, uriAbout)
+import Domain.Hero (Hero(..))
+import Server.Api (mkStaticUri)
 
 -- build a view, using a common template
 mkView :: Model -> View Action -> View Action
@@ -22,7 +22,7 @@ mkView Model{..} content =
         ]
     , h1_ [] [ "Heroes" ]
     , content
-    , p_ [] [ text (maybe "" ("error: " <>) _modelError) ]
+    , p_ [] [ text _modelError ]
     ]
 
 viewAbout :: Model -> View Action
@@ -50,8 +50,9 @@ viewHome m@Model{..} =
       []
       [ h2_ [] [ "Home" ]
       , p_ []
-          -- [ button_ [ onClick (ActionChangeUri uriHome) ] [ "fetch heroes" ]
-          [ button_ [ onClick ActionPopHeroes ] [ "pop heroes" ]
+          [ button_ [ onClick ActionFetchFail ] [ "fetch fail" ]
+          , button_ [ onClick ActionFetchHeroes ] [ "fetch heroes" ]
+          , button_ [ onClick ActionPopHeroes ] [ "pop heroes" ]
           ]
       , ul_ [] (map fmtHero _modelHeroes)
       ]
