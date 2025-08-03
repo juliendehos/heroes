@@ -6,6 +6,6 @@ import Miso
 data Action
     = ActionChangeUri URI
     | ActionHandleUri URI
-    | ActionPopHero
+    | ActionPop
     deriving (Eq)
 

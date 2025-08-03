@@ -65,10 +65,10 @@ instance ToHtml Page where
           , meta_ [ name_ "viewport" , content_ "width=device-width, initial-scale=1" ]
           , link_
             [ rel_ "icon"
-            , href_ "pub/favicon.ico"
+            , href_ (mkStaticUri "favicon.ico")
             , type_ "image/x-icon"
             ]
-          , script_ [ src_ "pub/index.js", type_ "module" ] ""
+          , script_ [ src_ (mkStaticUri "index.js"), type_ "module" ] ""
           , body_ [] [toView x]
           ]
         ]
@@ -86,6 +86,7 @@ heroes =
 
 main :: IO ()
 main = do
+  print $ mkStaticUri "favicon.ico"
   port <- read . fromMaybe "3000" <$> lookupEnv "PORT"
   putStrLn $ "Running on port " <> show port <> "..."
   run port $ logStdout $ compress serverApp
