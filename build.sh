@@ -24,6 +24,6 @@ echo "# generate output"
 echo ""###############################################################################
 myserver=$(nix develop .#default --experimental-features "nix-command flakes" --command bash -c "cabal list-bin server")
 mkdir output
-mv public output
+mv public output/
 cp $myserver output/
 
