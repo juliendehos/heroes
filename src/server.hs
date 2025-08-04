@@ -14,6 +14,7 @@ import Servant
 import System.Environment (lookupEnv)
 
 import App.Component (HeroesComponent, heroesComponent)
+import App.Model (Model)
 import App.Routes (Routes, uriHome, uriAbout, uri404)
 import Domain.Hero (Hero(..))
 import Server.Api (PublicApi, mkStaticUri)
@@ -79,7 +80,7 @@ instance ToHtml Page where
             , type_ "image/x-icon"
             ]
           , script_ [ src_ (mkStaticUri "index.js"), type_ "module" ] ""
-          , body_ [] [toView x]
+          , body_ [] [toView @Model x]
           ]
         ]
       ]

@@ -10,7 +10,7 @@ import App.Model (Model, modelHeroes, modelError, modelUri)
 import App.Routes (uri2ms)
 import Server.Api (uriHeroes)
 
-updateModel :: Action -> Effect Model Action
+updateModel :: Action -> Transition Model Action
 
 updateModel (ActionChangeUri u) = do
   modelUri .= u

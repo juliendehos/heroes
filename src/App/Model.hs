@@ -18,5 +18,5 @@ data Model = Model
 makeLenses ''Model
 
 mkModel :: URI -> Model
-mkModel = Model [] "loading..."   -- TODO this breaks hydration: Model [] ""
+mkModel = Model [] " "    -- warning: an empty would cause hydration to fail
 

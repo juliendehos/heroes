@@ -8,6 +8,7 @@ import Servant.API
 import Servant.Links
 
 import App.Action (Action)
+import App.Model (Model)
 
 -- client/server routes
 type RouteHome a = a
@@ -21,7 +22,7 @@ type Routes a
   :<|> Route404 a
 
 -- define routes for client app
-type ClientRoutes = Routes (View Action)
+type ClientRoutes = Routes (View Model Action)
 
 -- links to the routes
 uriHome, uriAbout, uri404 :: URI

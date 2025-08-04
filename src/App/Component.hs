@@ -1,4 +1,3 @@
-{-# LANGUAGE OverloadedStrings #-}
 
 module App.Component where
 
@@ -12,17 +11,16 @@ import App.Routes (ClientRoutes)
 import App.Update (updateModel)
 import App.View (viewHome, viewAbout, view404)
 
-type HeroesComponent = Component Model Action
+type HeroesComponent = App Model Action
 
 heroesComponent :: URI -> HeroesComponent
 heroesComponent uri =
   (componentApp uri)
     { subs = [ uriSub ActionHandleUri ]
-    , initialAction = Just (ActionError "")
     , logLevel = DebugAll
     }
 
-componentApp :: URI -> Component Model Action
+componentApp :: URI -> App Model Action
 componentApp currentUri = component initialModel updateModel viewModel
   where
     initialModel = mkModel currentUri

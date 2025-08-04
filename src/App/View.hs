@@ -12,7 +12,7 @@ import Domain.Hero (Hero(..))
 import Server.Api (mkStaticUri)
 
 -- build a view, using a common template
-mkView :: Model -> View Action -> View Action
+mkView :: Model -> View Model Action -> View Model Action
 mkView Model{..} content =
   div_
     []
@@ -25,7 +25,7 @@ mkView Model{..} content =
     , p_ [] [ text _modelError ]
     ]
 
-viewAbout :: Model -> View Action
+viewAbout :: Model -> View Model Action
 viewAbout m = 
   mkView  m $
     div_ 
@@ -43,7 +43,7 @@ viewAbout m =
           ]
       ]
 
-viewHome :: Model -> View Action
+viewHome :: Model -> View Model Action
 viewHome m@Model{..} =
   mkView m $
     div_ 
@@ -65,7 +65,7 @@ viewHome m@Model{..} =
         , img_ [ src_ (mkStaticUri _heroImage) ]
         ]
 
-view404 :: Model -> View Action
+view404 :: Model -> View Model Action
 view404 m =
   mkView m $
     div_
