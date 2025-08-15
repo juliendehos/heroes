@@ -16,7 +16,7 @@ echo ""
 echo ""###############################################################################
 echo "# build server"
 echo ""###############################################################################
-nix develop .#default --experimental-features "nix-command flakes" --command bash -c "cabal build server"
+nix develop .#default --experimental-features "nix-command flakes" --command bash -c "cabal update && cabal build server"
 
 echo ""
 echo ""###############################################################################
