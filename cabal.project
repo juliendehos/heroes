@@ -7,8 +7,8 @@ allow-newer:
 source-repository-package
   type: git
   location: https://github.com/dmjio/miso
-  -- branch: master
-  tag: f754206a89b45dcabbc08c11ae52483eb05b89d5
+  -- tag: 5319931
+  -- tag: ed14c60
 
 flags: +template-haskell
 
@@ -20,4 +20,20 @@ source-repository-package
 source-repository-package
   type: git
   location: https://github.com/basvandijk/monad-control
+
+source-repository-package
+  type: git
+  location: https://github.com/scotty-web/wai-middleware-static
+
+source-repository-package
+  type: git
+  location: https://codeberg.org/elblake/expiring-cache-map
+
+source-repository-package
+  type: git
+  location: https://github.com/haskell-hvr/cryptohash-sha1
+
+source-repository-package
+  type: git
+  location: https://github.com/haskell/base16-bytestring
 

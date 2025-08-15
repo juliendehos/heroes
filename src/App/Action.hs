@@ -2,7 +2,6 @@
 module App.Action where
 
 import Miso
-import Miso.String
 
 import Domain.Hero (Hero)
 

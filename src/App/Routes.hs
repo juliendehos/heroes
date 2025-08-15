@@ -3,7 +3,6 @@ module App.Routes where
 
 import Data.Proxy
 import Miso
-import Miso.String (ms, MisoString)
 import Servant.API
 import Servant.Links
 

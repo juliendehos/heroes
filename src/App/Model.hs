@@ -5,7 +5,6 @@ module App.Model where
 import Miso
 import Miso.Lens
 import Miso.Lens.TH
-import Miso.String
 
 import Domain.Hero (Hero)
 
