@@ -16,13 +16,13 @@ echo ""
 echo ""###############################################################################
 echo "# build server"
 echo ""###############################################################################
-nix develop .#default --experimental-features "nix-command flakes" --command bash -c "cabal update && cabal build server"
+nix develop --experimental-features "nix-command flakes" --command bash -c "cabal update && cabal build app"
 
 echo ""
 echo ""###############################################################################
 echo "# generate output"
 echo ""###############################################################################
-myserver=$(nix develop .#default --experimental-features "nix-command flakes" --command bash -c "cabal list-bin server")
+myserver=$(nix develop --experimental-features "nix-command flakes" --command bash -c "cabal list-bin app")
 mkdir output
 mv public output/
 cp $myserver output/

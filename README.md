@@ -8,13 +8,15 @@ Simple isomorphic web app using [Miso](https://github.com/dmjio/miso).
 
 ```
 nix develop .#wasm --experimental-features "nix-command flakes" --command bash -c "make"
-nix develop .#default --experimental-features "nix-command flakes" --command bash -c "cabal update && cabal build server"
+nix develop --experimental-features "nix-command flakes" --command bash -c "cabal update && cabal build"
 ```
 
 ## Build and deploy in a `output` folder:
 
 ```
 build.sh
+cd output
+./app
 ```
 
 ## References:
