@@ -30,10 +30,10 @@ updateModel (ActionError str) =
   modelError .= str
 
 updateModel ActionFetchFail =
-  fetch "fail" "GET" Nothing [] ActionSetHeroes ActionError
+  getJSON "fail" [] ActionSetHeroes ActionError
 
 updateModel ActionFetchHeroes =
-  fetch (uri2ms uriHeroes) "GET" Nothing [] ActionSetHeroes ActionError
+  getJSON (uri2ms uriHeroes) [] ActionSetHeroes ActionError
 
 updateModel (ActionSetHeroes heroes)  = do
   modelHeroes .= heroes

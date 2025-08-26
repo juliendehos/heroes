@@ -4,6 +4,10 @@
 
 import Data.Maybe (fromMaybe)
 import Miso hiding (run)
+import Miso.Html.Render
+import Miso.Html.Element as H
+-- import Miso.Html.Event as E
+import Miso.Html.Property as P
 import Network.HTTP.Types
 import Network.Wai (responseLBS)
 import Network.Wai.Application.Static (defaultWebAppSettings)
@@ -11,6 +15,7 @@ import Network.Wai.Handler.Warp (run)
 import Network.Wai.Middleware.Gzip (GzipFiles (..), def, gzip, gzipFiles)
 import Network.Wai.Middleware.RequestLogger (logStdout)
 import Servant
+import Servant.Miso.Html
 import System.Environment (lookupEnv)
 
 import App.Component (HeroesComponent, heroesComponent)
@@ -71,7 +76,7 @@ instance ToHtml Page where
       , html_
         [ lang_ "en" ]
         [ head_ 
-          [ title_ "Heroes" ]
+          [ P.title_ "Heroes" ]
           [ meta_ [ charset_ "utf-8" ]
           , meta_ [ name_ "viewport" , content_ "width=device-width, initial-scale=1" ]
           , link_

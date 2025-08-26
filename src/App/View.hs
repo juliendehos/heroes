@@ -4,6 +4,9 @@
 module App.View where
 
 import Miso
+import Miso.Html.Element as H 
+import Miso.Html.Event as E
+import Miso.Html.Property as P
 
 import App.Action (Action(..))
 import App.Model (Model(..))

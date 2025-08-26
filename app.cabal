@@ -27,7 +27,7 @@ executable server
   other-modules:
     App.Action App.Component App.Model App.Routes App.Update App.View Domain.Hero Server.Api
   build-depends: 
-    aeson, base, miso, network-uri, servant, servant-server, wai-extra, warp, wai, wai-app-static, http-types
+    aeson, base, miso, network-uri, servant, servant-miso-html, servant-server, wai-extra, warp, wai, wai-app-static, http-types
   ghc-options:
     -Wall -O2
   default-language:

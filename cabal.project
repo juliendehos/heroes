@@ -9,4 +9,9 @@ flags: +template-haskell
 source-repository-package
   type: git
   location: https://github.com/dmjio/miso
+  tag: 35dbb6f
+
+source-repository-package
+  type: git
+  location: https://github.com/haskell-miso/servant-miso-html
 
