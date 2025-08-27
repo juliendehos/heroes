@@ -4,6 +4,15 @@ Simple isomorphic web app using [Miso](https://github.com/dmjio/miso).
 
 ![](demo-heroes.gif)
 
+## Try using docker:
+
+```
+docker run --rm -it -p 3000:3000 juliendehos/heroes:latest
+```
+
+Then go to `localhost:3000`.
+
+
 ## Build and run:
 
 ```
@@ -19,11 +28,10 @@ cd output
 ./app
 ```
 
-## build and run a docker image:
+## build a docker image:
 
 ```
 ./build-docker.sh
-docker run --rm -it -p 3000:3000 heroes:latest
 ```
 
 ## References:

@@ -14,7 +14,7 @@ let
 
 
 in pkgs.dockerTools.buildLayeredImage {
-  name = "heroes";
+  name = "juliendehos/heroes";
   tag = "latest";
   created = "now";
   contents = [ "${app-client}" ];
