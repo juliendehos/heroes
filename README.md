@@ -14,9 +14,16 @@ nix develop --experimental-features "nix-command flakes" --command bash -c "caba
 ## Build and deploy in a `output` folder:
 
 ```
-build.sh
+./build.sh
 cd output
 ./app
+```
+
+## build and run a docker image:
+
+```
+./build-docker.sh
+docker run --rm -it -p 3000:3000 heroes:latest
 ```
 
 ## References:

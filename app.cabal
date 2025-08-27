@@ -7,7 +7,7 @@ executable app
   hs-source-dirs:
     src
   default-language:
-    GHC2024
+    GHC2021
   default-extensions:
     TemplateHaskell
 
@@ -20,7 +20,7 @@ executable app
     build-depends: 
       aeson, base, miso, network-uri, servant
     ghc-options:
-      -Wall -O2 -no-hs-main -optl-mexec-model=reactor "-optl-Wl,--export=hs_start"
+      -Wall -O2 -no-hs-main -optl-mexec-model=reactor "-optl-Wl,--export=hs_start" -ddump-splices
 
   else
 
@@ -31,5 +31,5 @@ executable app
     build-depends: 
       aeson, base, miso, network-uri, servant, servant-miso-html, servant-server, wai-extra, warp, wai, wai-app-static, http-types
     ghc-options:
-      -Wall -O2
+      -Wall -O2 -ddump-splices
 

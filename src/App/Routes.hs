@@ -1,3 +1,4 @@
+{-# LANGUAGE DataKinds #-}
 
 module App.Routes where
 
