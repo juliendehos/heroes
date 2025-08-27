@@ -24,7 +24,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build docker image using Nix
-        run: ./build-docker.sh
+        run: |
+          export NIX_PATH=nixpkgs=https://github.com/NixOS/nixpkgs/archive/refs/tags/25.05.tar.gz
+          ./build-docker.sh
 
       - name: Push Docker image to Docker Hub
         run: docker push juliendehos/heroes:latest
