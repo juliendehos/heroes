@@ -31,6 +31,6 @@ uriHome, uriAbout, uri404 :: R.URI
 uriHome :<|> uriAbout :<|> uri404 = 
   allLinks' toMisoURI (Proxy @ClientRoutes)
 
-uri2ms :: URI -> MisoString
+uri2ms :: URI -> MisoString   -- TODO
 uri2ms = ms . show
 

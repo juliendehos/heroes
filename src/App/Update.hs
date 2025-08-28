@@ -4,6 +4,7 @@
 module App.Update where
 
 import Miso
+import Miso.Lens
 
 import App.Action (Action(..))
 import App.Model (Model, modelHeroes, modelError, modelUri)
@@ -13,11 +14,11 @@ import Server.Api (uriHeroes)
 updateModel :: Action -> Transition Model Action
 
 updateModel (ActionChangeUri u) = do
-  modelUri .= u
+  io_ (pushURI u)
   modelError .= ""
 
 updateModel (ActionHandleUri u) = do
-  io_ (pushURI u)
+  modelUri .= u
   modelError .= ""
 
 updateModel ActionPopHeroes = do

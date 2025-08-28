@@ -5,13 +5,14 @@ module App.Model where
 import Miso
 import Miso.Lens
 import Miso.Lens.TH
+import Miso.Router qualified as R -- TODO
 
 import Domain.Hero (Hero)
 
 data Model = Model
   { _modelHeroes :: [Hero]
   , _modelError :: MisoString
-  , _modelUri :: URI
+  , _modelUri :: R.URI
   } deriving (Eq)
 
 makeLenses ''Model
