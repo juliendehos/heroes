@@ -15,8 +15,8 @@ in
     modifier = drv:
       pkgs.haskell.lib.addBuildTools drv (with ghc; [
         miso
-        servant-miso-html
         servant-miso-router
+        servant-miso-html
         cabal-install
       ]);
   }

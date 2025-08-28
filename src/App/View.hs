@@ -20,8 +20,8 @@ mkView Model{..} content =
   div_
     []
     [ p_ []
-        [ button_ [ onClick (ActionChangeUri uriHome) ] [ "home" ]
-        , button_ [ onClick (ActionChangeUri uriAbout) ] [ "about" ]
+        [ button_ [ onClick (ActionPushUri uriHome) ] [ "home" ]
+        , button_ [ onClick (ActionPushUri uriAbout) ] [ "about" ]
         ]
     , h1_ [] [ "Heroes" ]
     , content

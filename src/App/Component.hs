@@ -17,7 +17,7 @@ type HeroesComponent = App Model Action
 heroesComponent :: URI -> HeroesComponent
 heroesComponent uri =
   (componentApp uri)
-    { subs = [ uriSub ActionHandleUri ]
+    { subs = [ uriSub ActionSetUri ]
     , logLevel = DebugAll
     }
 

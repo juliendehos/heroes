@@ -2,13 +2,12 @@
 module App.Action where
 
 import Miso
-import Miso.Router qualified as R -- TODO
 
 import Domain.Hero (Hero)
 
 data Action
-    = ActionChangeUri R.URI
-    | ActionHandleUri R.URI
+    = ActionPushUri URI
+    | ActionSetUri URI
     | ActionPopHeroes
     | ActionError MisoString
     | ActionFetchFail
