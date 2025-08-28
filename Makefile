@@ -1,7 +1,10 @@
 
-.PHONY= update build optim
+.PHONY= update build optim clean todo
 
 all: update build optim
+
+todo:
+	find src -name "*.hs" | xargs grep -i todo
 
 update:
 	wasm32-wasi-cabal update

@@ -2,11 +2,12 @@
 module App.Component where
 
 import Data.Proxy
-import Servant.API
 import Miso
+import Servant.API hiding (URI)
+import Servant.Miso.Router
 
 import App.Action (Action(..))
-import App.Model (Model(..), mkModel, modelUri)
+import App.Model (Model(..), mkModel)
 import App.Routes (ClientRoutes)
 import App.Update (updateModel)
 import App.View (viewHome, viewAbout, view404)
@@ -26,7 +27,7 @@ componentApp currentUri = component initialModel updateModel viewModel
     initialModel = mkModel currentUri
 
     viewModel m =
-        case route (Proxy @ClientRoutes) clientHandlers modelUri m of
+        case route (Proxy @ClientRoutes) clientHandlers _modelUri m of
           Left _ -> view404 m
           Right v -> v
 

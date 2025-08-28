@@ -4,8 +4,10 @@ module App.Routes where
 
 import Data.Proxy
 import Miso
-import Servant.API
-import Servant.Links
+import Miso.Router qualified as R
+import Servant.API hiding (URI)
+import Servant.Links hiding (URI)
+import Servant.Miso.Router
 
 import App.Action (Action)
 import App.Model (Model)
@@ -25,9 +27,9 @@ type Routes a
 type ClientRoutes = Routes (View Model Action)
 
 -- links to the routes
-uriHome, uriAbout, uri404 :: URI
+uriHome, uriAbout, uri404 :: R.URI
 uriHome :<|> uriAbout :<|> uri404 = 
-  allLinks' linkURI (Proxy @ClientRoutes)
+  allLinks' toMisoURI (Proxy @ClientRoutes)
 
 uri2ms :: URI -> MisoString
 uri2ms = ms . show

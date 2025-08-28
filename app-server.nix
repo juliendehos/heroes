@@ -1,3 +1,4 @@
+
 { pkgs ? import ./nixpkgs.nix }:
 
 let
@@ -15,6 +16,7 @@ in
       pkgs.haskell.lib.addBuildTools drv (with ghc; [
         miso
         servant-miso-html
+        servant-miso-router
         cabal-install
       ]);
   }

@@ -4,7 +4,6 @@
 module App.Update where
 
 import Miso
-import Miso.Lens
 
 import App.Action (Action(..))
 import App.Model (Model, modelHeroes, modelError, modelUri)

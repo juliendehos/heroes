@@ -16,8 +16,8 @@ Then go to `localhost:3000`.
 ## Build and run:
 
 ```
-nix develop .#wasm --experimental-features "nix-command flakes" --command bash -c "make"
-nix develop --experimental-features "nix-command flakes" --command bash -c "cabal update && cabal build"
+nix develop .#wasm  --command bash -c "make"
+nix develop --command bash -c "cabal update && cabal build"
 ```
 
 ## Build and deploy in a `output` folder:
