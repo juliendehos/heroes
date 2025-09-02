@@ -4,6 +4,7 @@ Simple isomorphic web app using [Miso](https://github.com/dmjio/miso).
 
 ![](demo-heroes.gif)
 
+
 ## Try using docker:
 
 ```
@@ -20,6 +21,7 @@ nix develop .#wasm  --command bash -c "make"
 nix develop --command bash -c "cabal update && cabal build"
 ```
 
+
 ## Build and deploy in a `output` folder:
 
 ```
@@ -28,11 +30,21 @@ cd output
 ./app
 ```
 
+
 ## build a docker image:
 
 ```
 ./build-docker.sh
 ```
+
+
+## edit using vscode
+
+```
+nix-shell app-server.nix
+code .
+```
+
 
 ## References:
 
